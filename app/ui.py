@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from app.io_service import load_population_data
 from tkinter import ttk
+import matplotlib.pyplot as plt
 
 
 def run_app():
@@ -47,6 +48,19 @@ def run_app():
 
         for _, row in df.iterrows():
             tree.insert("", "end", values=(row["year"], int(row["population"])))
+   
+    def show_population_chart(df):
+        years = df["year"]
+        population = df["population"]
+
+        plt.figure()
+        plt.plot(years, population, marker="o")
+        plt.title("Численность населения РФ по годам")
+        plt.xlabel("Год")
+        plt.ylabel("Численность населения")
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
 
     def on_run():
         path = selected_file.get().strip()
@@ -70,6 +84,7 @@ def run_app():
             return
 
         show_table(df)
+        show_population_chart(df)
 
 
     tk.Label(
