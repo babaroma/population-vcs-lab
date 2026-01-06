@@ -1,6 +1,7 @@
 import pandas as pd
 from app.analytics import calculate_yearly_change, find_max_growth_decline
 from app.forecast import moving_average_forecast, build_forecast_years
+from app.analytics import calculate_yearly_change, find_max_growth_decline, find_max_abs_change
 
 
 def build_population_report(df: pd.DataFrame, window: int, years: int) -> dict:
@@ -16,7 +17,8 @@ def build_population_report(df: pd.DataFrame, window: int, years: int) -> dict:
     # Округлим проценты для вывода (в расчётах можно оставлять как есть)
     df2["percent_rounded"] = df2["percent"].round(4)
 
-    extremes = find_max_growth_decline(df2)
+    extremes = abs_extremes = find_max_abs_change(df2)
+
 
     last_year = int(df2["year"].max())
     forecast_years = build_forecast_years(last_year, years)
@@ -31,4 +33,5 @@ def build_population_report(df: pd.DataFrame, window: int, years: int) -> dict:
         "forecast_years": forecast_years,
         "forecast_values": forecast_values,
         "forecast_values_rounded": forecast_values_rounded,
+        "abs_extremes": abs_extremes,
     }

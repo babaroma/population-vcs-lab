@@ -29,3 +29,18 @@ def find_max_growth_decline(df_with_percent: pd.DataFrame) -> dict:
         "max_decline_year": int(max_decline["year"]),
         "max_decline_percent": float(max_decline["percent"]),
     }
+def find_max_abs_change(df_with_change: pd.DataFrame) -> dict:
+    """
+    Находит максимальный рост/падение в абсолютных значениях (чел.)
+    """
+    tmp = df_with_change.dropna(subset=["change"]).copy()
+
+    max_increase = tmp.loc[tmp["change"].idxmax()]
+    max_decrease = tmp.loc[tmp["change"].idxmin()]
+
+    return {
+        "max_increase_year": int(max_increase["year"]),
+        "max_increase_value": int(max_increase["change"]),
+        "max_decrease_year": int(max_decrease["year"]),
+        "max_decrease_value": int(max_decrease["change"]),
+    }
