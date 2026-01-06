@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from app.io_service import load_population_data
+from tkinter import ttk
 
 
 def run_app():
@@ -23,6 +24,29 @@ def run_app():
         )
         if path:
             selected_file.set(path)
+    
+    def show_table(df):
+        table_window = tk.Toplevel()
+        table_window.title("Данные о населении РФ")
+        table_window.geometry("420x400")
+
+        columns = ("year", "population")
+        tree = ttk.Treeview(table_window, columns=columns, show="headings")
+
+        tree.heading("year", text="Год")
+        tree.heading("population", text="Численность населения")
+
+        tree.column("year", width=80, anchor="center")
+        tree.column("population", width=200, anchor="center")
+
+        scrollbar = ttk.Scrollbar(table_window, orient="vertical", command=tree.yview)
+        tree.configure(yscrollcommand=scrollbar.set)
+
+        tree.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        for _, row in df.iterrows():
+            tree.insert("", "end", values=(row["year"], int(row["population"])))
 
     def on_run():
         path = selected_file.get().strip()
@@ -45,10 +69,8 @@ def run_app():
             messagebox.showerror("Ошибка загрузки файла", str(e))
             return
 
-        messagebox.showinfo(
-            "Файл загружен",
-            f"Данные успешно загружены.\nКоличество записей: {len(df)}"
-        )
+        show_table(df)
+
 
     tk.Label(
         root,
